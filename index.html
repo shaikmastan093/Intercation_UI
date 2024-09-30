@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR.js Social Media Interaction</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <style>
+      /* Overlay styles */
+      #overlay {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        color: white;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 10; /* Ensure it's above AR content */
+      }
+    </style>
+  </head>
+  <body style="margin: 0; overflow: hidden;">
+    <div id="overlay">Click on the icons!</div>
+    <a-scene embedded arjs>
+      <a-marker type="pattern" url="./marker.patt" id="marker">
+        <!-- Load your social media icons as 3D models here -->
+        
+        <!-- LinkedIn Icon -->
+        <a-entity
+          gltf-model="./assets/linkedin.glb"
+          scale="0.2 0.2 0.2"
+          position="-1 0 0"
+          class="clickable"
+          click-handler="url: https://www.linkedin.com"
+        ></a-entity>
+
+        <!-- Facebook Icon -->
+        <a-entity
+          gltf-model="./assets/facebook.glb"
+          scale="0.2 0.2 0.2"
+          position="0 0 0"
+          class="clickable"
+          click-handler="url: https://www.facebook.com"
+        ></a-entity>
+
+        <!-- YouTube Icon -->
+        <a-entity
+          gltf-model="./assets/youtube.glb"
+          scale="0.2 0.2 0.2"
+          position="1 0 0"
+          class="clickable"
+          click-handler="url: https://www.youtube.com"
+        ></a-entity>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      // Click handler component to interact with the icons
+      AFRAME.registerComponent('click-handler', {
+        schema: {
+          url: { type: 'string' }
+        },
+        init: function () {
+          this.el.addEventListener('click', function () {
+            console.log('Icon clicked!');
+            // Open the URL in a new tab
+            window.open(this.getAttribute('click-handler').url, '_blank');
+          });
+        }
+      });
+
+      // Listen for custom events (optional)
+      document.addEventListener('icon-clicked', function () {
+        const overlay = document.getElementById('overlay');
+        overlay.innerHTML = 'You clicked on an icon!';
+        overlay.style.background = 'rgba(0, 255, 0, 0.5)'; // Change background to green
+      });
+    </script>
+  </body>
+</html>
