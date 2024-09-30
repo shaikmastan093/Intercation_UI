@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR.js Social Media Interaction</title>
+    <title>AR.js Custom Model Interaction</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
@@ -16,66 +16,50 @@
         background: rgba(0, 0, 0, 0.5);
         padding: 10px;
         border-radius: 5px;
-        z-index: 10; /* Ensure it's above AR content */
       }
     </style>
   </head>
   <body style="margin: 0; overflow: hidden;">
-    <div id="overlay">Click on the icons!</div>
-    <a-scene embedded arjs>
+    <div id="overlay">Click on the model!</div>
+    <a-scene embedded arjs='trackingMethod: best;'>
+      <!-- Use your custom marker here -->
       <a-marker type="pattern" url="./marker.patt" id="marker">
-        <!-- Load your social media icons as 3D models here -->
-        
-        <!-- LinkedIn Icon -->
+        <!-- Load your 3D model here -->
         <a-entity
-          gltf-model="./assets/linkedin.glb"
-          scale="0.2 0.2 0.2"
-          position="-1 0 0"
+          gltf-model="./assets/model3.glb"
+          scale="0.5 0.5 0.5"  <!-- Adjust scale for better visibility -->
+          position="0 0 0"  <!-- Center the model on the marker -->
+          rotation="0 0 0"  <!-- Ensure proper orientation -->
           class="clickable"
-          click-handler="url: https://www.linkedin.com"
-        ></a-entity>
-
-        <!-- Facebook Icon -->
-        <a-entity
-          gltf-model="./assets/facebook.glb"
-          scale="0.2 0.2 0.2"
-          position="0 0 0"
-          class="clickable"
-          click-handler="url: https://www.facebook.com"
-        ></a-entity>
-
-        <!-- YouTube Icon -->
-        <a-entity
-          gltf-model="./assets/youtube.glb"
-          scale="0.2 0.2 0.2"
-          position="1 0 0"
-          class="clickable"
-          click-handler="url: https://www.youtube.com"
-        ></a-entity>
+          click-handler>
+        </a-entity>
       </a-marker>
       <a-entity camera></a-entity>
     </a-scene>
 
     <script>
-      // Click handler component to interact with the icons
+      // Click handler component to interact with the model
       AFRAME.registerComponent('click-handler', {
-        schema: {
-          url: { type: 'string' }
-        },
         init: function () {
           this.el.addEventListener('click', function () {
-            console.log('Icon clicked!');
-            // Open the URL in a new tab
-            window.open(this.getAttribute('click-handler').url, '_blank');
+            console.log('Model clicked!');
+            // Trigger a custom event or perform any action here
+            this.emit('model-clicked');
           });
         }
       });
 
-      // Listen for custom events (optional)
-      document.addEventListener('icon-clicked', function () {
+      // Listen for custom events
+      document.addEventListener('model-clicked', function () {
         const overlay = document.getElementById('overlay');
-        overlay.innerHTML = 'You clicked on an icon!';
+        overlay.innerHTML = 'You clicked on the model!';
         overlay.style.background = 'rgba(0, 255, 0, 0.5)'; // Change background to green
+      });
+
+      // Ensure that touch events work smoothly
+      document.addEventListener('touchstart', function (event) {
+        // Prevent default touch actions to enhance interaction
+        event.preventDefault();
       });
     </script>
   </body>
